@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevAgent - Autonomous Multi-Agent Software Development Platform</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="landing-body">
+
+    <!-- Atmospheric Vignette Layer -->
+    <div class="hero-vignette-overlay"></div>
+
+    <div class="landing-content-wrapper">
+        <!-- Top Navigation matching reference -->
+        <header class="landing-nav" id="mainHeader">
+            <a href="/" class="logo" id="brandLogo">
+                <span class="logo-badge">DA</span>
+                <span class="logo-name">DevAgent</span>
+            </a>
+            
+            <ul class="nav-menu" id="navLinks">
+                <li><a href="#pipeline">Agent Pipeline</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+            </ul>
+            
+            <div class="nav-right" id="authNavButtons">
+                {% if current_user %}
+                    <span class="user-pill">
+                        <span class="profile-avatar">{{ current_user.username[:2].upper() }}</span>
+                        <span>{{ current_user.username }}</span>
+                    </span>
+                    <a href="/dashboard" class="btn btn-primary btn-sm">Developer Console</a>
+                    <a href="/logout" class="btn btn-outline btn-sm">Sign Out</a>
+                {% else %}
+                    <a href="/login" class="btn-ghost-nav" id="signInNavBtn">Sign In</a>
+                    <a href="/signup" class="btn btn-primary btn-sm" id="getStartedNavBtn">Get Started</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- Hero Section matching the reference screenshot -->
+        <section class="landing-hero" id="heroSection">
+            <div class="hero-pill" id="heroPill">
+                <span class="dot"></span>
+                <span>Autonomous Multi-Agent Engineering Core</span>
+            </div>
+            
+            <h1 class="hero-title" id="heroTitle">
+                Natural specifications to production-ready software
+            </h1>
+            
+            <p class="hero-subtitle" id="heroSubtitle">
+                An autonomous software engineering platform powered by multi-agent coordination, automated verification, local SQLite persistence, and Python code generation.
+            </p>
+            
+            <div class="hero-cta-group" id="heroCtaGroup">
+                <a href="/dashboard" class="btn btn-primary btn-lg" id="launchConsoleBtn">
+                    Launch Developer Console
+                </a>
+                <a href="/new_project" class="btn btn-secondary-white btn-lg" id="createNewProjectBtn">
+                    Create New Project
+                </a>
+                <a href="/projects/1" class="btn btn-secondary-white btn-lg" id="viewLiveDemoBtn">
+                    View Live Demo
+                </a>
+            </div>
+        </section>
+
+        <!-- 4 Bento Metric Cards matching the exact layout in the image -->
+        <section class="landing-metrics-grid" id="metricsGrid">
+            <!-- Card 1: 8 Stages -->
+            <div class="metric-card" id="metricCardStages">
+                <div class="metric-icon-wrap">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <div class="metric-val">8 Stages</div>
+                <div class="metric-lbl">Deterministic Pipeline Execution</div>
+            </div>
+
+            <!-- Card 2: 100% Python -->
+            <div class="metric-card" id="metricCardPython">
+                <div class="metric-icon-wrap">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                </div>
+                <div class="metric-val">100% Python</div>
+                <div class="metric-lbl">Flask &amp; SQLite Architecture</div>
+            </div>
+
+            <!-- Card 3: Isolated Workspaces -->
+            <div class="metric-card" id="metricCardIsolated">
+                <div class="metric-icon-wrap">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                </div>
+                <div class="metric-val">Isolated</div>
+                <div class="metric-lbl">Local Project Workspaces</div>
+            </div>
+
+            <!-- Card 4: Automated Verification -->
+            <div class="metric-card" id="metricCardAutomated">
+                <div class="metric-icon-wrap">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <div class="metric-val">Automated</div>
+                <div class="metric-lbl">Unit Testing &amp; Bug Verification</div>
+            </div>
+        </section>
+
+        <!-- Pipeline Showcase Section -->
+        <section class="landing-section" id="pipeline">
+            <div class="section-header">
+                <span class="section-badge">AUTONOMOUS MULTI-AGENT LIFECYCLE</span>
+                <h2>End-to-End Software Engineering Pipeline</h2>
+                <p>Every project executes through coordinated specialized agents with verified artifacts at every stage.</p>
+            </div>
+            
+            <div class="workflow-grid">
+                <div class="workflow-card">
+                    <div class="step-num">STAGE 01</div>
+                    <h3>Requirement Agent</h3>
+                    <p>Analyzes freeform user specifications, extracts REST endpoint schemas, constraints, and data models.</p>
+                </div>
+                <div class="workflow-card">
+                    <div class="step-num">STAGE 02</div>
+                    <h3>Planning Agent</h3>
+                    <p>Synthesizes dependency graphs, milestones, task checklists, and architectural implementation roadmaps.</p>
+                </div>
+                <div class="workflow-card">
+                    <div class="step-num">STAGE 03</div>
+                    <h3>Architecture Agent</h3>
+                    <p>Designs database schemas, entity relationship models, microservice topology, and API contracts.</p>
+                </div>
+                <div class="workflow-card">
+                    <div class="step-num">STAGE 04</div>
+                    <h3>Coding Agent</h3>
+                    <p>Writes production-grade Python Flask services with clean SQLAlchemy data layer and requirements.txt.</p>
+                </div>
+                <div class="workflow-card">
+                    <div class="step-num">STAGE 05</div>
+                    <h3>Testing Agent</h3>
+                    <p>Synthesizes comprehensive PyTest test suites and verifies 100% assertion coverage across endpoints.</p>
+                </div>
+                <div class="workflow-card">
+                    <div class="step-num">STAGE 06</div>
+                    <h3>Documentation Agent</h3>
+                    <p>Generates detailed README guides, swagger schema docs, and deployment manuals automatically.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Live Terminal Preview Section -->
+        <section class="landing-section" id="architecture">
+            <div class="section-header">
+                <span class="section-badge">REAL-TIME ORCHESTRATION</span>
+                <h2>Autonomous Execution Engine</h2>
+                <p>Live event streaming and telemetry captured directly from background multi-agent pipelines.</p>
+            </div>
+            
+            <div class="terminal-showcase">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <span class="terminal-title">devagent-orchestrator — project_001</span>
+                </div>
+                <div class="terminal-content">
+                    <div class="log-entry"><span class="log-time">[15:42:01]</span> <span class="log-level-INFO">INFO</span> <span class="log-comp">&lt;Orchestrator&gt;</span> <span class="log-msg">Initialized project workspace at /generated_projects/project_1</span></div>
+                    <div class="log-entry"><span class="log-time">[15:42:02]</span> <span class="log-level-INFO">INFO</span> <span class="log-comp">&lt;RequirementAgent&gt;</span> <span class="log-msg">Extracted 5 functional endpoints from specification</span></div>
+                    <div class="log-entry"><span class="log-time">[15:42:04]</span> <span class="log-level-INFO">INFO</span> <span class="log-comp">&lt;PlanningAgent&gt;</span> <span class="log-msg">Execution tree synthesized (7 atomic tasks)</span></div>
+                    <div class="log-entry"><span class="log-time">[15:42:07]</span> <span class="log-level-INFO">INFO</span> <span class="log-comp">&lt;ArchitectureAgent&gt;</span> <span class="log-msg">Designed SQLite schema with SQLAlchemy declarative base</span></div>
+                    <div class="log-entry"><span class="log-time">[15:42:11]</span> <span class="log-level-INFO">INFO</span> <span class="log-comp">&lt;CodingAgent&gt;</span> <span class="log-msg">Generated main.py, models.py, requirements.txt</span></div>
+                    <div class="log-entry"><span class="log-time">[15:42:14]</span> <span class="log-level-INFO" style="color: #4ade80;">INFO</span> <span class="log-comp">&lt;TestingAgent&gt;</span> <span class="log-msg">Test run: 4 passed, 0 failed in 0.46s (100% pass rate)</span></div>
+                    <div class="log-entry"><span class="log-time">[15:42:16]</span> <span class="log-level-INFO">INFO</span> <span class="log-comp">&lt;DocumentationAgent&gt;</span> <span class="log-msg">Exported README.md and technical documentation</span></div>
+                    <div class="log-entry"><span class="log-time">[15:42:17]</span> <span style="color:#4ade80; font-weight:700;">SUCCESS</span> <span class="log-comp">&lt;Orchestrator&gt;</span> <span class="log-msg">Pipeline COMPLETED. Artifacts synthesized in local repository.</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="landing-footer">
+            <div class="footer-left">
+                <div class="logo">
+                    <span class="logo-badge">DA</span>
+                    <span class="logo-name">DevAgent</span>
+                </div>
+                <p style="margin-top: 0.5rem; color: #71717a; font-size: 0.8125rem;">Autonomous Software Engineering Platform &copy; 2026</p>
+            </div>
+            <div class="footer-right" style="color: #71717a; font-size: 0.8125rem;">
+                Built with Python Flask, SQLite, and Autonomous Multi-Agent Orchestration
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>

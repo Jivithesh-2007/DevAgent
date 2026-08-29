@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevAgent - Project Registry</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="app-body">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="{% if current_user %}/dashboard{% else %}/{% endif %}" class="logo" id="navLogo">
+            <span class="logo-badge">DA</span>
+            <span>DevAgent</span>
+        </a>
+        <ul class="nav-links">
+            <li id="navHomeItem" {% if current_user %}style="display: none;"{% endif %}><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/projects" class="active">Projects</a></li>
+            <li><a href="/new_project">New Project</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="user-menu" id="userMenu" style="{% if not current_user %}display: none;{% else %}display: flex;{% endif %}">
+                <span class="user-pill">
+                    <span class="profile-avatar">{% if current_user %}{{ current_user.username[:2].upper() }}{% else %}US{% endif %}</span>
+                    <span class="username-display">{% if current_user %}{{ current_user.username }}{% else %}User{% endif %}</span>
+                </span>
+                <a href="/logout" onclick="handleSignOut(event)" class="btn btn-outline btn-sm">Sign Out</a>
+            </div>
+            <div class="guest-menu" id="guestMenu" style="{% if current_user %}display: none;{% else %}display: flex;{% endif %}">
+                <a href="/login" class="btn btn-secondary btn-sm">Sign In</a>
+                <a href="/signup" class="btn btn-primary btn-sm">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="menu-section">
+                <h3>Workspace</h3>
+                <ul>
+                    <li><a href="/dashboard">Overview</a></li>
+                    <li><a href="/projects" class="active">All Projects</a></li>
+                    <li><a href="/new_project">Create Project</a></li>
+                </ul>
+            </div>
+            <div class="menu-section">
+                <h3>Agent Engine</h3>
+                <ul>
+                    <li><a href="/projects/1">Demo Workspace</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-footer">
+                <p class="title">DevAgent Core</p>
+                <p class="sub">SQLite Database Connected</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <div>
+                    <h1>Projects Registry</h1>
+                    <p>Complete record of all planned, building, and completed repositories</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                    <input type="text" id="projectsFullSearch" onkeyup="filterProjectsFull()" placeholder="Search repositories..." style="padding: 0.5rem 0.85rem; font-size: 0.8125rem; width: 240px; border-radius: 0.375rem; border: 1px solid var(--border); background-color: #fff;">
+                    <a href="/new_project" class="btn btn-primary">+ Create New Project</a>
+                </div>
+            </header>
+
+            <div class="table-container">
+                <table id="projectsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Project Name</th>
+                            <th>Technology</th>
+                            <th>Framework</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th style="text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchProjectsFull();
+        });
+    </script>
+</body>
+</html>

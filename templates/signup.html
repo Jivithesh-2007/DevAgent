@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevAgent - Create Account</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="/" class="logo">
+                    <span class="logo-badge">DA</span>
+                    <span>DevAgent</span>
+                </a>
+                <h1>Create developer account</h1>
+                <p>Start orchestrating autonomous software development pipelines</p>
+            </div>
+
+            <div id="authAlert" class="auth-alert auth-alert-error" style="{% if not error %}display: none;{% endif %}">
+                {{ error or '' }}
+            </div>
+
+            <form id="signupForm" method="POST" action="/signup">
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" value="{{ full_name or '' }}" placeholder="Your Name" autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="{{ username or '' }}" required placeholder="Your Username">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" value="{{ email or '' }}" required placeholder="user@gmail.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Choose a secure password">
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem;">Create Account</button>
+            </form>
+
+            <div class="auth-footer">
+                Already have an account? <a href="/login">Sign in</a>
+                <div style="margin-top: 0.75rem;">
+                    <a href="/" style="color: #71717a; font-weight: normal; font-size: 0.75rem;">&larr; Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const signupForm = document.getElementById('signupForm');
+        const alertBox = document.getElementById('authAlert');
+        const submitBtn = document.getElementById('submitBtn');
+
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const full_name = document.getElementById('full_name').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !email || !password) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Creating Account...';
+
+            fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ full_name, username, email, password })
+            })
+            .then(res => res.json().then(data => ({ status: res.status, data })))
+            .then(({ status, data }) => {
+                if (status === 201 && data.user) {
+                    localStorage.setItem('devagent_user', JSON.stringify(data.user));
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('token', String(data.user.id));
+                    window.location.href = '/dashboard';
+                } else {
+                    alertBox.style.display = 'block';
+                    alertBox.innerText = data.error || 'Registration failed. Please try again.';
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Create Account';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                signupForm.submit();
+            });
+        });
+    </script>
+</body>
+</html>

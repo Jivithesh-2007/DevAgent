@@ -1,0 +1,6 @@
+{
+  "name": "DevAgent",
+  "description": "Autonomous software development agent platform with Python Flask, SQLite persistence, and multi-agent code orchestration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

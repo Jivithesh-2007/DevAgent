@@ -1,0 +1,6 @@
+flask==3.0.3
+python-dotenv==1.0.1
+google-genai==0.3.0
+sqlalchemy==2.0.30
+pytest==8.2.1
+requests==2.32.2

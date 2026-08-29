@@ -1,0 +1,11 @@
+{
+  "name": "autonomous-software-agent",
+  "version": "1.0.0",
+  "description": "An Agentic AI-Based System for Automated Software Planning, Code Generation, Testing, Debugging and Verification",
+  "scripts": {
+    "dev": "python3 app.py",
+    "build": "chmod +x start.sh",
+    "start": "python3 app.py",
+    "lint": "python3 -m py_compile app.py database.py ai_service.py orchestrator.py"
+  }
+}

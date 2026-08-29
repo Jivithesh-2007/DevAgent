@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevAgent - Project Workspace</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="app-body">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="{% if current_user %}/dashboard{% else %}/{% endif %}" class="logo" id="navLogo">
+            <span class="logo-badge">DA</span>
+            <span>DevAgent</span>
+        </a>
+        <ul class="nav-links">
+            <li id="navHomeItem" {% if current_user %}style="display: none;"{% endif %}><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/new_project">New Project</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="user-menu" id="userMenu" style="{% if not current_user %}display: none;{% else %}display: flex;{% endif %}">
+                <span class="user-pill">
+                    <span class="profile-avatar">{% if current_user %}{{ current_user.username[:2].upper() }}{% else %}US{% endif %}</span>
+                    <span class="username-display">{% if current_user %}{{ current_user.username }}{% else %}User{% endif %}</span>
+                </span>
+                <a href="/logout" onclick="handleSignOut(event)" class="btn btn-outline btn-sm">Sign Out</a>
+            </div>
+            <div class="guest-menu" id="guestMenu" style="{% if current_user %}display: none;{% else %}display: flex;{% endif %}">
+                <a href="/login" class="btn btn-secondary btn-sm">Sign In</a>
+                <a href="/signup" class="btn btn-primary btn-sm">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="menu-section">
+                <h3>Workspace</h3>
+                <ul>
+                    <li><a href="/dashboard">Overview</a></li>
+                    <li><a href="/projects">All Projects</a></li>
+                    <li><a href="/new_project">Create Project</a></li>
+                </ul>
+            </div>
+            <div class="menu-section">
+                <h3>Quick Actions</h3>
+                <ul>
+                    <li><a href="#" onclick="startWorkflow(); return false;" id="sideStartBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Pipeline</a></li>
+                    <li><a href="/api/projects/{{ project_id }}/export/zip" download><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg> Export ZIP</a></li>
+                    <li><a href="#" onclick="refreshCurrentTab(); return false;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Refresh Data</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-footer">
+                <p class="title">Workspace #{{ project_id }}</p>
+                <p class="sub">Local Project File Tree</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Project Header -->
+            <div class="project-header">
+                <div>
+                    <h1 id="projTitle">Loading Project...</h1>
+                    <p id="projDesc" style="color: var(--text-muted); margin-top: 0.25rem;"></p>
+                    <div class="project-meta">
+                        <span class="badge" id="projStatus">PENDING</span>
+                        <span class="tech-tag" id="projTech">Python / Flask</span>
+                        <span class="tech-tag" id="projDb">SQLite</span>
+                    </div>
+                </div>
+                <div class="header-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+                    <a href="/api/projects/{{ project_id }}/export/zip" class="btn btn-secondary btn-lg" id="exportZipBtn" download title="Download ZIP Codebase">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg> Export ZIP
+                    </a>
+                    <button class="btn btn-primary btn-lg" id="startBtn" onclick="startWorkflow()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 6px;"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start Autonomous Agent
+                    </button>
+                </div>
+            </div>
+
+            <!-- Agent Pipeline Progress View -->
+            <div class="pipeline-view">
+                <h3>Autonomous Agent Pipeline Stages</h3>
+                <div class="pipeline-stages" id="pipelineStages">
+                    <div class="stage" id="stage-Requirement">1. Requirement Analysis</div>
+                    <div class="stage" id="stage-Planning">2. Sprint Planning</div>
+                    <div class="stage" id="stage-Architecture">3. Architecture Design</div>
+                    <div class="stage" id="stage-Coding">4. Code Generation</div>
+                    <div class="stage" id="stage-Testing">5. Automated Testing</div>
+                    <div class="stage" id="stage-Review">6. Bug & Security Audit</div>
+                    <div class="stage" id="stage-Documentation">7. Documentation</div>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('tab-overview', this)">Overview & Requirements</button>
+                <button class="tab-btn" onclick="switchTab('tab-files', this)">Source Files</button>
+                <button class="tab-btn" onclick="switchTab('tab-tests', this)">Test Suite</button>
+                <button class="tab-btn" onclick="switchTab('tab-tasks', this)">Agent Tasks</button>
+                <button class="tab-btn" onclick="switchTab('tab-logs', this)">Execution Logs</button>
+            </div>
+
+            <!-- Tab: Overview -->
+            <div id="tab-overview" class="tab-content">
+                <div class="card">
+                    <h3 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 0.75rem;">Requirements Specification</h3>
+                    <pre class="pre-text" id="projRequirements">Loading...</pre>
+                </div>
+            </div>
+
+            <!-- Tab: Files -->
+            <div id="tab-files" class="tab-content" style="display: none;">
+                <!-- Sleek Code Synthesis Loading Animation -->
+                <div id="codeGeneratingState" class="code-generating-card" style="display: none;">
+                    <div class="generating-header">
+                        <div class="generating-spinner"></div>
+                        <div>
+                            <h4 style="margin: 0; font-size: 1.0625rem; color: #ffffff; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Autonomous Code Generation Active
+                            </h4>
+                            <p style="margin: 0.25rem 0 0 0; font-size: 0.8125rem; color: #a1a1aa;">
+                                Multi-agent engine is synthesizing microservice architecture, models, and test suites...
+                            </p>
+                        </div>
+                    </div>
+                    <div class="generating-progress-bar-wrap">
+                        <div id="generatingProgressBar" class="generating-progress-bar" style="width: 0%;"></div>
+                    </div>
+                    <div class="generating-meta">
+                        <span id="generatingStepLabel" style="font-weight: 500; color: #38bdf8;">Initializing agent workspace...</span>
+                        <span id="generatingPctLabel" class="mono" style="font-weight: 700; color: #ffffff;">0%</span>
+                    </div>
+                    <div class="terminal-window">
+                        <div class="terminal-window-header">
+                            <span class="dot dot-red"></span>
+                            <span class="dot dot-yellow"></span>
+                            <span class="dot dot-green"></span>
+                            <span class="terminal-title">devagent-sandbox — zsh</span>
+                        </div>
+                        <div class="generating-terminal-preview" id="generatingTerminalPreview">
+                            <div class="terminal-line"><span class="t-cyan">&gt; [Orchestrator]</span> Initialized sandbox workspace for synthesis</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code-viewer" id="codeViewerContainer">
+                    <div class="file-list" id="fileList">
+                        <div style="padding: 1rem; color: var(--text-muted); font-size: 0.8125rem;">No files generated yet. Run the agent pipeline first.</div>
+                    </div>
+                    <div class="code-display">
+                        <div class="code-header">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <span id="currentFileName" style="font-weight: 600; color: #09090b;">Select a file</span>
+                                <span id="fileMeta" style="color: #71717a; font-size: 0.75rem;"></span>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <button class="btn btn-secondary btn-sm" id="regenCodeBtn" onclick="runPipeline()" style="font-size: 0.75rem;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Run Pipeline
+                                </button>
+                                <a href="/api/projects/{{ project_id }}/export/zip" class="btn btn-secondary btn-sm" id="exportZipBtnTop" download>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M21 8v13H3V8"/><path d="M1 3h22v5H1z"/><path d="M10 12h4"/></svg> Download ZIP
+                                </a>
+                                <button class="btn btn-outline btn-sm" id="copyCodeBtn" onclick="copyActiveCode()">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> Copy Code
+                                </button>
+                            </div>
+                        </div>
+                        <pre style="margin: 0; flex: 1; overflow: auto; background: #09090b; padding: 1.25rem;"><code id="codeContent" style="color: #f4f4f5; font-size: 0.8125rem; line-height: 1.6; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; white-space: pre-wrap; word-break: break-word;">// Select a file from the left sidebar to preview generated code</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Tests -->
+            <div id="tab-tests" class="tab-content" style="display: none;">
+                <div class="table-container">
+                    <table id="testsTable">
+                        <thead>
+                            <tr>
+                                <th>Test Name</th>
+                                <th>Result</th>
+                                <th>Execution Time</th>
+                                <th>Diagnostics / Error Trace</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Tasks -->
+            <div id="tab-tasks" class="tab-content" style="display: none;">
+                <div class="table-container">
+                    <table id="tasksTable">
+                        <thead>
+                            <tr>
+                                <th>Task Description</th>
+                                <th>Responsible Agent</th>
+                                <th>Status</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Logs -->
+            <div id="tab-logs" class="tab-content" style="display: none;">
+                <div class="logs-container" id="logsTerminal">
+                    <div class="log-entry">
+                        <span class="log-time">[00:00:00]</span>
+                        <span class="log-level-INFO">INFO</span>
+                        <span class="log-comp">&lt;System&gt;</span>
+                        <span class="log-msg">Agent terminal ready. Waiting for execution trigger...</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const PROJECT_ID = {{ project_id }};
+    </script>
+    <script src="/static/js/project.js"></script>
+</body>
+</html>

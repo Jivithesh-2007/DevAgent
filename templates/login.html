@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevAgent - Sign In</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="/" class="logo">
+                    <span class="logo-badge">DA</span>
+                    <span>DevAgent</span>
+                </a>
+                <h1>Sign in to your account</h1>
+                <p>Access your projects, pipelines, and autonomous agent workspaces</p>
+            </div>
+
+            <div id="authAlert" class="auth-alert auth-alert-error" style="{% if not error %}display: none;{% endif %}">
+                {{ error or '' }}
+            </div>
+
+            <div class="auth-quick-fill">
+                <span>Demo Account: </span>
+                <button type="button" onclick="fillDemo('developer', 'password123')">Fill Demo Credentials</button>
+            </div>
+
+            <form id="loginForm" method="POST" action="/login">
+                <div class="form-group">
+                    <label for="identifier">Username or Email</label>
+                    <input type="text" id="identifier" name="identifier" value="{{ identifier or '' }}" required placeholder="user@gmail.com" autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••">
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 1rem;">Sign In</button>
+            </form>
+
+            <div class="auth-footer">
+                Don't have an account? <a href="/signup">Create an account</a>
+                <div style="margin-top: 0.75rem;">
+                    <a href="/" style="color: #71717a; font-weight: normal; font-size: 0.75rem;">&larr; Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fillDemo(user, pass) {
+            document.getElementById('identifier').value = user;
+            document.getElementById('password').value = pass;
+        }
+
+        const loginForm = document.getElementById('loginForm');
+        const alertBox = document.getElementById('authAlert');
+        const submitBtn = document.getElementById('submitBtn');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('identifier').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!identifier || !password) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Signing In...';
+
+            fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identifier, password })
+            })
+            .then(res => res.json().then(data => ({ status: res.status, data })))
+            .then(({ status, data }) => {
+                if (status === 200 && data.user) {
+                    localStorage.setItem('devagent_user', JSON.stringify(data.user));
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('token', String(data.user.id));
+                    window.location.href = '/dashboard';
+                } else {
+                    alertBox.style.display = 'block';
+                    alertBox.innerText = data.error || 'Authentication failed. Check your credentials.';
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Sign In';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                // Fallback to standard form submit
+                loginForm.submit();
+            });
+        });
+    </script>
+</body>
+</html>

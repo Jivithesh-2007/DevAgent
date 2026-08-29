@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevAgent - Create New Project</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="app-body">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="{% if current_user %}/dashboard{% else %}/{% endif %}" class="logo" id="navLogo">
+            <span class="logo-badge">DA</span>
+            <span>DevAgent</span>
+        </a>
+        <ul class="nav-links">
+            <li id="navHomeItem" {% if current_user %}style="display: none;"{% endif %}><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/new_project" class="active">New Project</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="user-menu" id="userMenu" style="{% if not current_user %}display: none;{% else %}display: flex;{% endif %}">
+                <span class="user-pill">
+                    <span class="profile-avatar">{% if current_user %}{{ current_user.username[:2].upper() }}{% else %}US{% endif %}</span>
+                    <span class="username-display">{% if current_user %}{{ current_user.username }}{% else %}User{% endif %}</span>
+                </span>
+                <a href="/logout" onclick="handleSignOut(event)" class="btn btn-outline btn-sm">Sign Out</a>
+            </div>
+            <div class="guest-menu" id="guestMenu" style="{% if current_user %}display: none;{% else %}display: flex;{% endif %}">
+                <a href="/login" class="btn btn-secondary btn-sm">Sign In</a>
+                <a href="/signup" class="btn btn-primary btn-sm">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="menu-section">
+                <h3>Workspace</h3>
+                <ul>
+                    <li><a href="/dashboard">Overview</a></li>
+                    <li><a href="/projects">All Projects</a></li>
+                    <li><a href="/new_project" class="active">Create Project</a></li>
+                </ul>
+            </div>
+            <div class="menu-section">
+                <h3>Agent Engine</h3>
+                <ul>
+                    <li><a href="/projects/1">Demo Workspace</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="create-project-container">
+                <header class="page-header" style="margin-bottom: 1rem;">
+                    <div>
+                        <h1>Initialize New Project</h1>
+                        <p>Provide project specifications for autonomous multi-agent planning and generation</p>
+                    </div>
+                </header>
+
+                <div class="form-card">
+                <!-- Preset Templates Bar -->
+                <div class="preset-templates-bar">
+                    <span class="preset-label">Quick Specification Templates:</span>
+                    <div class="preset-chips">
+                        <button type="button" class="preset-chip" onclick="applyTemplate('payroll')">Payroll API</button>
+                        <button type="button" class="preset-chip" onclick="applyTemplate('ecommerce')">E-Commerce Cart</button>
+                        <button type="button" class="preset-chip" onclick="applyTemplate('taskmanager')">Task & Issue Tracker</button>
+                        <button type="button" class="preset-chip" onclick="applyTemplate('metrics')">Telemetry & Metrics API</button>
+                    </div>
+                </div>
+
+                <form id="createProjectForm">
+                    <div class="form-group">
+                        <label for="projectName">Project Name *</label>
+                        <input type="text" id="projectName" name="name" required placeholder="e.g. Employee Payroll REST API">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="projectDesc">Project Description</label>
+                        <textarea id="projectDesc" name="description" rows="2" placeholder="Brief executive summary of the system..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="technology">Programming Language</label>
+                            <input type="text" id="technology" name="technology" value="Python" readonly>
+                        </div>
+                        <div class="form-group half">
+                            <label for="framework">Web Framework</label>
+                            <input type="text" id="framework" name="framework" value="Flask" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="database">Database Technology</label>
+                        <input type="text" id="database" name="database" value="SQLite" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="requirements">Software Requirements & Endpoints (One per line) *</label>
+                        <textarea id="requirements" name="requirements" rows="7" required placeholder="1. Create employee profile with department and salary&#10;2. Retrieve employee by ID&#10;3. Calculate monthly tax deduction and net pay&#10;4. List all active employees with pagination&#10;5. Delete employee record"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-lg">Initialize Autonomous Pipeline &rarr;</button>
+                        <a href="/dashboard" class="btn btn-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    <script>
+        const PRESETS = {
+            payroll: {
+                name: "Employee Payroll & Benefits API",
+                desc: "RESTful microservice managing employee compensation, monthly tax withholding calculations, and department reporting.",
+                reqs: "1. POST /api/employees - Register new employee with department, salary, and tax classification\n2. GET /api/employees/<id> - Retrieve employee profile and salary breakdown\n3. POST /api/payroll/calculate - Compute net pay, deductions, and tax withholding for a pay period\n4. GET /api/employees - List all employees with filter by department and status\n5. DELETE /api/employees/<id> - Archive employee record"
+            },
+            ecommerce: {
+                name: "Order Processing & Cart Engine",
+                desc: "Autonomous order fulfillment and cart management system with inventory deduction and receipt summary.",
+                reqs: "1. POST /api/cart/items - Add SKU product with quantity and price validation\n2. GET /api/cart - Fetch active cart with subtotal, tax rate, and total cost\n3. POST /api/orders/checkout - Finalize order, reserve inventory in database, and generate invoice UUID\n4. GET /api/orders/<id> - Retrieve order status and shipping tracking info\n5. POST /api/orders/<id>/cancel - Process cancellation and restock product inventory"
+            },
+            taskmanager: {
+                name: "Kanban Task & Workflow Engine",
+                desc: "Project task management service with priority queues, assignee tracking, and sprint milestone reporting.",
+                reqs: "1. POST /api/tasks - Create task with title, assignee, priority (LOW/MED/HIGH), and deadline\n2. GET /api/tasks - List tasks filtered by status (TODO, IN_PROGRESS, DONE) and assignee\n3. PUT /api/tasks/<id>/status - Transition task through workflow pipeline stages\n4. POST /api/tasks/<id>/comments - Add markdown discussion audit entry to task\n5. GET /api/tasks/stats - Aggregate completion velocity and overdue task counts"
+            },
+            metrics: {
+                name: "Telemetry & Performance Metrics Service",
+                desc: "High-throughput metric ingestion and aggregation service for tracking latency, errors, and system health.",
+                reqs: "1. POST /api/metrics/ingest - Log timeseries data point with metric name, numeric value, and service tag\n2. GET /api/metrics/aggregate - Calculate P50, P95, P99 and average values over time range\n3. GET /api/health/services - Report live uptime status and error rates across microservices\n4. POST /api/alerts/rules - Configure threshold alert rules and notification webhooks\n5. GET /api/alerts/active - List all currently firing threshold violations"
+            }
+        };
+
+        function applyTemplate(key) {
+            const p = PRESETS[key];
+            if (!p) return;
+            document.getElementById('projectName').value = p.name;
+            document.getElementById('projectDesc').value = p.desc;
+            document.getElementById('requirements').value = p.reqs;
+        }
+
+        document.getElementById('createProjectForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Creating Project...";
+
+            const payload = {
+                name: document.getElementById('projectName').value,
+                description: document.getElementById('projectDesc').value,
+                technology: document.getElementById('technology').value,
+                framework: document.getElementById('framework').value,
+                database: document.getElementById('database').value,
+                requirements: document.getElementById('requirements').value
+            };
+
+            try {
+                const res = await fetch('/api/projects', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.id) {
+                    window.location.href = `/projects/${data.id}`;
+                } else {
+                    alert('Error creating project: ' + (data.error || 'Unknown error'));
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "Initialize Autonomous Pipeline →";
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Network error while creating project.');
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Initialize Autonomous Pipeline →";
+            }
+        });
+    </script>
+</body>
+</html>
