@@ -1,0 +1,8 @@
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin-right: auto;
+    margin-left: 2.25rem;
+    height: 100%;
+}
