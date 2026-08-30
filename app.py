@@ -340,7 +340,8 @@ def get_files(project_id):
     project = session.query(Project).get(project_id)
     session.close()
 
-    workspace_dir = os.path.join(os.getcwd(), 'generated_projects', f'project_{project_id}')
+    base_dir = '/tmp' if os.environ.get('VERCEL') else os.getcwd()
+    workspace_dir = os.path.join(base_dir, 'generated_projects', f'project_{project_id}')
     files_list = []
     
     # If workspace doesn't exist or is empty, ensure project files exist
@@ -468,7 +469,8 @@ def export_project_zip(project_id):
         session.close()
         return jsonify({'error': 'Project not found'}), 404
         
-    workspace_dir = os.path.join(os.getcwd(), 'generated_projects', f'project_{project_id}')
+    base_dir = '/tmp' if os.environ.get('VERCEL') else os.getcwd()
+    workspace_dir = os.path.join(base_dir, 'generated_projects', f'project_{project_id}')
     
     memory_file = io.BytesIO()
     with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
@@ -541,5 +543,4 @@ def get_dashboard_stats():
     })
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 3000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=3000, debug=True)

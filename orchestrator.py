@@ -34,7 +34,11 @@ def run_agent_workflow(project_id):
         session.close()
         return
 
-    workspace_dir = os.path.join(os.getcwd(), 'generated_projects', f'project_{project_id}')
+    if os.environ.get('VERCEL'):
+        base_dir = '/tmp'
+    else:
+        base_dir = os.getcwd()
+    workspace_dir = os.path.join(base_dir, 'generated_projects', f'project_{project_id}')
     os.makedirs(workspace_dir, exist_ok=True)
 
     try:

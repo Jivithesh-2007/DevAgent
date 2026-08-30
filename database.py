@@ -1,3 +1,4 @@
+import os
 from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -69,7 +70,9 @@ class TestResult(Base):
     error_message = Column(Text)
     duration = Column(String(20))
 
-engine = create_engine('sqlite:///devagent.db', connect_args={'check_same_thread': False})
+# Support serverless deployments (Vercel/Lambda) where only /tmp is writable
+db_path = '/tmp/devagent.db' if os.environ.get('VERCEL') else 'devagent.db'
+engine = create_engine(f'sqlite:///{db_path}', connect_args={'check_same_thread': False})
 SessionLocal = sessionmaker(bind=engine)
 
 def init_db():
